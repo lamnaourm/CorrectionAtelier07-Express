@@ -44,7 +44,6 @@ routes.get("/checklogin", (req, res) => {
       return res.status(500).json({ message: "erreur de lecture des donnees" });
     }else {
       if(user){
-        console.log(user);
         bcrypt.compare(password, user.password, (err, resultat) => {
           if(resultat)
             return res.status(200).json({ message: "SUCCESS" });
@@ -57,6 +56,27 @@ routes.get("/checklogin", (req, res) => {
   });
 });
 
-routes.get("/checkemail", (req, res) => {});
+routes.get("/checkemail", (req, res) => {
+  const { mail, password } = req.body;
+
+  if (!mail || !password)
+    return res.status(401).json({ message: "Donnees user manquant" });
+
+  userModel.findOne({ mail }, (err, user) => {
+    if(err){
+      return res.status(500).json({ message: "erreur de lecture des donnees" });
+    }else {
+      if(user){
+        bcrypt.compare(password, user.password, (err, resultat) => {
+          if(resultat)
+            return res.status(200).json({ message: "SUCCESS" });
+          else 
+            return res.status(500).json({ message: "ECHEC" });
+        })
+      }else 
+        return res.status(404).json({ message: "mail inexistant" });
+    }
+  });
+});
 
 module.exports = routes;
