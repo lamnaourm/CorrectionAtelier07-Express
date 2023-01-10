@@ -18,7 +18,7 @@ mongoose.connect(url).then(() => {
     console.log('erreur de connexion a bd', error);
 })
 
-app.use("/", userRoute)
+app.use("/api/user", userRoute)
 
 app.listen(port, ()=> {
     console.log("Server started at ", port);
